@@ -57,4 +57,27 @@ npm install babel-plugin-import --save-dev
 
  ]
 ```
+##### 1.3 移动端适配方法
+
+1. 固定高度，宽度百分比
+2. Media Query（媒体查询)：bootstrap
+3. flex布局：尽量使用flex+rem进行布局和移动端的适配、
+
+`rem`（font size of the root element）是相对长度单位。相对于根元素（即html元素）`font-size`计算值的倍数。
+
+##### 1.4 定位 搜索框搜索按钮
+
+icon图标的下载：在https://www.iconfont.cn/阿里巴巴图标矢量库
+
+正确引入图片：
+
+使用require("路径")，然后：
+
+```
+<img :src="locationIcon" width="100%" />
+```
+
+##### 1.5 轮播图区域
+
+使用Swipe, SwipeItem，懒加载Lazyload,先引入，然后将图片地址直接放在一个数组中,chrome浏览器下模拟`slow 3G`可以看懒加载效果
 
