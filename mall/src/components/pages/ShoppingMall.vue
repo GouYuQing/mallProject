@@ -35,41 +35,43 @@
     </div>
     <!-- 商品推荐 -->
     <div class="recommend">
-        <div class="recommend-title">商品推荐</div>
-        <div class="recommend-body">
-            <swiper :options="swiperOption">
-                <swiper-slide v-for="(item,index) in recommend" :key="index">
-                    <div class="recommend-item">
-                        <img :src="item.image" width="80%"/>
-                        <div>{{item.goodsName}}</div>
-                        <div>￥{{item.price}} (￥{{item.mallPrice}})</div>
-                    </div>
-                </swiper-slide>
-            </swiper>
-        </div>
+      <div class="recommend-title">商品推荐</div>
+      <div class="recommend-body">
+        <swiper :options="swiperOption">
+          <swiper-slide v-for="(item,index) in recommend" :key="index">
+            <div class="recommend-item">
+              <img :src="item.image" width="80%" />
+              <div>{{item.goodsName}}</div>
+              <div>￥{{item.price}} (￥{{item.mallPrice}})</div>
+            </div>
+          </swiper-slide>
+        </swiper>
+      </div>
     </div>
+  <floorComponent :floorData="floor1"></floorComponent>
   </div>
 </template>
 
 <script>
 import axios from "axios";
-import 'swiper/dist/css/swiper.css'
-import {swiper,swiperSlide} from 'vue-aswsome-swiper'
+import "swiper/dist/css/swiper.css";
+import { swiper, swiperSlide } from "vue-awesome-swiper";
+import floorComponent from '../component/floorComponent';
 export default {
   data() {
     return {
-       swiperOption:{
-         slidesPerView:3 
+      swiperOption: {
+        slidesPerView: 3
       },
       locationIcon: require("../../assets/images/location.png"),
       bannerPicture: [],
       category: [],
       advertising: "",
-      recommend:[],
-     
+      recommend: [],
+      floor1: [],
     };
   },
-  components:{swiper,swiperSlide},
+  components: { swiper, swiperSlide,floorComponent },
   created() {
     axios({
       url: "https://54bec635-5c60-4648-ab53-4954047cb6e3.mock.pstmn.io/index",
@@ -77,12 +79,13 @@ export default {
     })
       .then(response => {
         console.log(response.data.data);
-        console.log(response.data.data.advertesPicutre)
+        console.log(response.data.data.advertesPicutre);
         if (response.status == 200) {
           this.category = response.data.data.category;
           this.advertising = response.data.data.advertesPicture;
           this.bannerPicture = response.data.data.slides;
           this.recommend = response.data.data.recommend;
+          this.floor1 = response.data.data.floor1;
         }
       })
       .catch(error => {});
@@ -107,11 +110,11 @@ export default {
   color: #fff;
 }
 .location-icon {
-  padding-top: 0.4rem;
-  padding-left: 0.5rem;
+  padding-top: 0.8rem;
+  padding-left: 0.3rem;
 }
 .van-button {
-  margin-left: 0.6rem;
+  margin-left: 0.3rem;
 }
 .swiper-area {
   max-height: 15rem;
@@ -132,25 +135,24 @@ export default {
   font-size: 12px;
   text-align: center;
 }
-.recommend{
-    background-color: #fff;
-    margin-top: 0.3rem;
+.recommend {
+  background-color: #fff;
+  margin-top: 0.3rem;
 }
-.recommend-title{
-    font-size: 14px;
-    border-bottom: 1px solid #eee;
-    padding:0.2rem;
-    columns: #ff4400;
+.recommend-title {
+  font-size: 14px;
+  border-bottom: 1px solid #eee;
+  padding: 0.2rem;
+  columns: #ff4400;
 }
-.recommend-body{
-    border-bottom: 1px solid #eee;
+.recommend-body {
+  border-bottom: 1px solid #eee;
+}
+.recommend-item {
+  width: 99%;
+  border-right: 1px solid #eee;
+  font-size: 12px;
+  text-align: center;
+}
 
-}
-.recommend-item{
-    width: 99%;
-    border-right: 1px solid #eee;
-    font-size: 12px;
-    text-align: center;
-
-}
 </style>
