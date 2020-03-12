@@ -2,7 +2,7 @@
   <div>
     <!-- 商品展示有多少展示多少 -->
     <div class="floor">
-      <div class="floor-title">商品展示</div>
+      <div class="floor-title">{{floorTitle}}</div>
       <div class="floor-irregular">
         <div class="floor-one">
           <img :src="floorData0.image" width="100%" />
@@ -29,7 +29,7 @@
 
 <script>
 export default {
-  props: ["floorData"],
+  props: ["floorData","floorTitle"],
   data() {
     return {
       floorData0: {},
@@ -56,8 +56,9 @@ export default {
   font-size: 14px;
   border-bottom: 1px solid #eee;
   padding: 0.2rem;
-  columns: #ff4400;
+  color: #ff4400;
   background-color: #fff;
+  text-align: center;
 }
 .floor-irregular {
   display: flex;

@@ -42,13 +42,27 @@
             <div class="recommend-item">
               <img :src="item.image" width="80%" />
               <div>{{item.goodsName}}</div>
-              <div>￥{{item.price}} (￥{{item.mallPrice}})</div>
+              <div>￥{{item.price | moneyFilter}} (￥{{item.mallPrice | moneyFilter}})</div>
             </div>
           </swiper-slide>
         </swiper>
       </div>
     </div>
-  <floorComponent :floorData="floor1"></floorComponent>
+    <floorComponent :floorData="floor1" :floorTitle="floorName.floor1"></floorComponent>
+    <floorComponent :floorData="floor2" :floorTitle="floorName.floor2"></floorComponent>
+    <floorComponent :floorData="floor3" :floorTitle="floorName.floor3"></floorComponent>
+    <div class="hot-area">
+      <div class="hot-title">热卖商品</div>
+      <div class="hot-goods">
+        <van-list>
+          <van-row gutter="20">
+            <van-col span="12" v-for="(item,index) in hotGoods" :key="index">
+              <goodsInfo :goodsImage="item.image" :goodsName="item.name" :goodsPrice="item.price"></goodsInfo>
+            </van-col>
+          </van-row>
+        </van-list>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -56,7 +70,10 @@
 import axios from "axios";
 import "swiper/dist/css/swiper.css";
 import { swiper, swiperSlide } from "vue-awesome-swiper";
-import floorComponent from '../component/floorComponent';
+import floorComponent from "../component/floorComponent";
+import { toMoney } from "@/filter/moneyFilter.js";
+import goodsInfo from "../component/goodsInfo";
+import url from '@/serviceAPI.config.js';
 export default {
   data() {
     return {
@@ -69,12 +86,22 @@ export default {
       advertising: "",
       recommend: [],
       floor1: [],
+      floor2: [],
+      floor3: [],
+      floorName: {},
+      hotGoods: []
     };
   },
-  components: { swiper, swiperSlide,floorComponent },
+  // 价格格式化
+  filters: {
+    moneyFilter(money) {
+      return toMoney(money);
+    }
+  },
+  components: { swiper, swiperSlide, floorComponent, goodsInfo },
   created() {
     axios({
-      url: "https://54bec635-5c60-4648-ab53-4954047cb6e3.mock.pstmn.io/index",
+      url: url.getShopingMallInfo,
       method: "get"
     })
       .then(response => {
@@ -86,6 +113,10 @@ export default {
           this.bannerPicture = response.data.data.slides;
           this.recommend = response.data.data.recommend;
           this.floor1 = response.data.data.floor1;
+          this.floor2 = response.data.data.floor2;
+          this.floor3 = response.data.data.floor3;
+          this.floorName = response.data.data.floorName;
+          this.hotGoods = response.data.data.hotGoods;
         }
       })
       .catch(error => {});
@@ -154,5 +185,10 @@ export default {
   font-size: 12px;
   text-align: center;
 }
-
+.hot-area {
+  text-align: center;
+  height: 1.8rem;
+  line-height: 1.8rem;
+  font-size: 14px;
+}
 </style>
