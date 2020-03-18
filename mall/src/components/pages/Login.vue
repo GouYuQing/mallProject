@@ -1,6 +1,6 @@
 <template>
   <div>
-    <van-nav-bar title="用户注册" left-text="返回" left-arrow @click-left="goBack" />
+    <van-nav-bar title="用户登录" left-text="返回" left-arrow @click-left="goBack" />
     <div class="register-panel">
       <van-field
         v-model="username"
@@ -21,7 +21,7 @@
         :error-message="passwordError"
       />
       <div class="register-button">
-        <van-button type="primary" @click="checkForm" size="large" :loading="openLoading">马上注册</van-button>
+        <van-button type="primary" @click="checkForm" size="large" :loading="openLoading">马上登录</van-button>
       </div>
     </div>
   </div>
@@ -36,8 +36,8 @@ export default {
     return {
       username: "",
       password: "",
-      openLoading: false, //不开启效果，为了检测是否提交，防止重复提交
-      usernameError: '',//用户名出现错误的时候进行提示
+      openLoading: false, //不开启效果
+      usernameError: '',
       passwordError: ''
     };
   },
@@ -47,10 +47,10 @@ export default {
     },
     checkForm() {
       if(this.checkInput()){
-        this.axiosRegisterUser()
+        this.axiosLoginUser()
       }
     },
-    checkInput() {//后期将其改为正则表达式
+    checkInput() {
       // console.log('1111111111111');
       let isOk = true;
       if (this.username.length < 4) {
@@ -67,7 +67,7 @@ export default {
       }
       return isOk;
     },
-    axiosRegisterUser() {
+    axiosLoginUser() {
       axios({
         url: url.registerUser,
         method: "post",
@@ -77,20 +77,8 @@ export default {
         }
       })
         .then(response => {
-          // console.log(response.data.code);
-          if (response.data.code == 200) {
-            Toast.success("注册成功");
-            this.$router.push("/");
-          } else {
-            // console.log(response.data.message);
-            Toast.fail("注册失败");
-            this.openLoading = false;
-          }
         })
         .catch(error => {
-          // console.log(error);
-          Toast.fail("注册失败");
-          this.openLoading = false;
         });
     }
   }

@@ -7,15 +7,17 @@ const bodyParser = require('koa-bodyparser')
 const cors = require('koa2-cors')
 
 app.use(cors())
-let user = require('./api/user.js')
+
 //装载所有子路由
+let user = require('./api/user.js')
 let router = new Router()
 router.use('/user',user.routes())
 
 //加载路由中间件
+app.use(bodyParser())
 app.use(router.routes())
 app.use(router.allowedMethods)
-app.use(bodyParser())
+
 
 
     ; (async () => {
@@ -26,8 +28,8 @@ app.use(bodyParser())
         // oneUser.save().then(() => {
         //     console.log('插入成功')
         // })
-        let users = await User.find({}).exec()
-        console.log(users)
+        // let users = await User.find({}).exec()
+        // console.log(users)
     })()
 
 app.use(async (ctx) => {

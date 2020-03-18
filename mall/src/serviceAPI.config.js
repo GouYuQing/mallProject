@@ -5,4 +5,4 @@ const URL = {
     getGoodsInfo:BASEURL+'getGoodsInfo',//商品信息
     registerUser:LOCALURl+'user/register',//用户注册接口
 }
-module.exports = URL
+export default URL
