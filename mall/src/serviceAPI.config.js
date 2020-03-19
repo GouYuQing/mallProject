@@ -4,5 +4,6 @@ const URL = {
     getShopingMallInfo:BASEURL+'index',//商城首页信息
     getGoodsInfo:BASEURL+'getGoodsInfo',//商品信息
     registerUser:LOCALURl+'user/register',//用户注册接口
+    login:LOCALURl+'user/login',//用户登录接口
 }
 export default URL

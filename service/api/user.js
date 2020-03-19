@@ -27,4 +27,33 @@ router.post('/register',async(ctx)=>{
     // let users = await User.find({}).exec();
     // console.log(users);
 })
+router.post('/login',async(ctx)=>{
+    let loginUser = ctx.request.body
+    // console.log(loginUser);
+    let userName = loginUser.userName;
+    let password = loginUser.password;
+    const User = mongoose.model('User');
+    await User.findOne({userName:userName}).exec().then(async(result)=>{
+        // console.log(result)
+        if(result){
+            let newUser = new User()
+            await newUser.comparePassword(password,result.password)
+            .then((isMatch)=>{
+                //对比结果
+                // console.log('111111')
+                ctx.body = {code:200,message:isMatch}
+            })
+            .catch((error)=>{
+                //服务器异常
+                // console.log(error)
+                ctx.body = {code:500,message:error}
+            })
+        }else{
+            ctx.body = {code:200,message:'用户名不存在'}
+        }
+    }).catch(error=>{
+        console.log(error);
+        ctx.body = {code:500,message:error}
+    })
+})
 module.exports=router;

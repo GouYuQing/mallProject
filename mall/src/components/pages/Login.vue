@@ -37,39 +37,44 @@ export default {
       username: "",
       password: "",
       openLoading: false, //不开启效果
-      usernameError: '',
-      passwordError: ''
+      usernameError: "",
+      passwordError: ""
     };
+  },
+  created(){
+    if(localStorage.userInfo){
+      Toast.success('已经处于登录状态,无须再次登录');
+      this.$router.push('/');
+    }
   },
   methods: {
     goBack() {
       this.$router.go(-1);
     },
     checkForm() {
-      if(this.checkInput()){
-        this.axiosLoginUser()
+      if (this.checkInput()) {
+        this.axiosLoginUser();
       }
     },
     checkInput() {
-      // console.log('1111111111111');
       let isOk = true;
       if (this.username.length < 4) {
         this.usernameError = "用户名不能少于4位";
         isOk = false;
       } else {
-        this.usernameError = '';
+        this.usernameError = "";
       }
       if (this.password.length < 6) {
         this.passwordError = "密码不能少于6位";
         isOk = false;
       } else {
-        this.passwordError = '';
+        this.passwordError = "";
       }
       return isOk;
     },
     axiosLoginUser() {
       axios({
-        url: url.registerUser,
+        url: url.login,
         method: "post",
         data: {
           userName: this.username,
@@ -77,12 +82,34 @@ export default {
         }
       })
         .then(response => {
+          // console.log(response)
+
+          if (response.data.code == 200 && response.data.message) {
+            new Promise((resolve, reject) => {
+              //本地保存状态
+              localStorage.userInfo = { userName: this.username };
+              setTimeout(() => {
+                resolve();
+              }, 500);
+            }).then(() => {
+              Toast.success("登陆成功");
+              this.$router.push("/");
+            }).catch((err)=>{
+              Toast.fail("登录状态保存失败");
+            });
+          } else {
+            Toast.fail("登录失败");
+            this.openLoading = false;
+          }
         })
         .catch(error => {
+          Toast.fail("登录失败");
+          this.openLoading = false;
         });
     }
   }
 };
+
 </script>
 
 <style scoped>

@@ -105,8 +105,8 @@ export default {
       method: "get"
     })
       .then(response => {
-        console.log(response.data.data);
-        console.log(response.data.data.advertesPicutre);
+        // console.log(response.data.data);
+        // console.log(response.data.data.advertesPicutre);
         if (response.status == 200) {
           this.category = response.data.data.category;
           this.advertising = response.data.data.advertesPicture;
@@ -119,7 +119,9 @@ export default {
           this.hotGoods = response.data.data.hotGoods;
         }
       })
-      .catch(error => {});
+      .catch(error => {
+        console.log('获取信息失败');
+      });
   }
 };
 </script>
