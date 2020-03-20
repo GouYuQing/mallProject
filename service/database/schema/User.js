@@ -11,8 +11,8 @@ const userSchema = new Schema({
     lastLoginAt: { type: Date, default: Date.now() }
 
 },{collection:'user'})
+//用户密码加盐加密
 userSchema.pre('save',function(next) {
-    //let user = this
     console.log(this)
     bcrypt.genSalt(SALT_WORK_FACTOR, (err, salt) => {
         if (err) return next(err)

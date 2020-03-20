@@ -239,3 +239,5 @@ axios({
     url: url.getShoppingMallInfo,
     method: 'get',
 })
+##### 1.12 商品展示页（未完成）
+写商品详情页展示，点击商品根据商品id进入详情页

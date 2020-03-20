@@ -170,3 +170,28 @@ app.use(bodyParser());
 const cors = require('koa2-cors')
 app.use(cors())
 ```
+##### 2.9 用户注册然后写入数据库
+
+500服务器异常
+
+得到前端数据之后，封装成一个user对象，直接存入数据库中。
+
+前端用户输入数据之后，判断数据的正确性，做出提示，不允许提交空值，（后期改变成正则表达式）然后post提交到后台
+
+防止重复提交，给用户一个提示，设置loadding属性，:loading="openLoading"。
+
+解决数据库里面的表名多加了S:
+
+```javascript
+const userSchema = new Schema({
+},{
+    collection:'user'//可以不要s，自己定义集合名字
+})
+```
+
+##### 2.10登录页面
+
+和注册页面一样
+
+##### 2.11 批量插入数据到MongoDB中
+插入goods，category、categorySub数据，建立Schema

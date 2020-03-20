@@ -10,8 +10,10 @@ app.use(cors())
 
 //装载所有子路由
 let user = require('./api/user.js')
+let goods = require('./api/goods.js')
 let router = new Router()
 router.use('/user',user.routes())
+router.use('/goods',goods.routes())
 
 //加载路由中间件
 app.use(bodyParser())
