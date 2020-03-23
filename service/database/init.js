@@ -9,7 +9,7 @@ exports.initSchemas = () =>{
 }
 exports.connect = ()=>{
     //连接数据库
-    
+    mongoose.set('useCreateIndex', true) 
     mongoose.connect(db,{useNewUrlParser: true, useUnifiedTopology: true })
 
     //增加数据库连接的事件监听
@@ -26,7 +26,7 @@ exports.connect = ()=>{
 
     //链接打开的时候
     mongoose.connection.once('open',()=>{
-        console.log('MongoDB Connected successfully!')
+        console.log('数据库连接成功!')
     })
 
 }
