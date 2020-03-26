@@ -5,6 +5,7 @@ import Register from '@/components/pages/Register'
 import Login from '@/components/pages/Login'
 import Goods from '@/components/pages/Goods'
 import Category from '@/components/pages/Category'
+import ShoppingCar from '@/components/pages/ShoppingCar'
 
 Vue.use(Router)
 
@@ -34,6 +35,11 @@ export default new Router({
       path:'/category',
       name:'Category',
       component:Category
+    },
+    {
+      path:'/shoppingCar',
+      name:'ShoppingCar',
+      component:ShoppingCar
     }
   ]
 })

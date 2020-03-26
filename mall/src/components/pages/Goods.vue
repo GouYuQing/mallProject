@@ -47,7 +47,8 @@ export default {
     }
   },
   created() {
-    this.goodsId = this.$route.query.goodsId;
+    //要么query接受，要么params接受
+    this.goodsId = this.$route.query.goodsId?this.$route.query.goodsId:this.$route.params.goodsId;
     this.getInfo();
   },
   methods: {

@@ -12,7 +12,7 @@
               <li
                 v-for="(item,index) in category"
                 :key="index"
-                @click="clickCategory(index)"
+                @click="clickCategory(index,item.ID)"
                 :class="{white:categoryIndex==index}"
               >{{item.MALL_CATEGORY_NAME}}</li>
             </ul>
@@ -20,21 +20,21 @@
         </van-col>
         <van-col span="18">
           <div class="tabCategorySub">
-            <van-tabs v-model="active">
-              <van-tab v-for="(item,index) in categorySub" :key="index" :title="item.MALL_SUB_NAME"></van-tab>
+            <van-tabs v-model="active" @click="onClickCategorySub">
+              <van-tab v-for="(item,index) in categorySub" :key="index" :title="item.MALL_SUB_NAME" ></van-tab>
             </van-tabs>
           </div>
           <div id="div-list">
             <!-- 下拉刷新效果实现 ，上拉加载-->
             <van-pull-refresh v-model="isRefresh" @refresh="onRefresh">
               <van-list v-model="loading" :finished="finished" @load="onLoad">
-                <div class="list-item" v-for="(item,index) in goodsList" :key="index">
+                <div class="list-item" @click="goGoodsInfo(item.ID)" v-for="(item,index) in goodsList" :key="index">
                   <div class="list-item-img">
-                    <img :src="item.IMAGE1" width="100%" :onerror="errorImg"/>
+                    <img :src="item.IMAGE1" width="100%" :onerror="errorImg" />
                   </div>
                   <div class="list-item-text">
                     <div>{{item.NAME}}</div>
-                    <div class>${{item.ORI_PRICE}}</div>
+                    <div class>价格：￥{{item.ORI_PRICE|moneyFilter}}</div>
                   </div>
                 </div>
               </van-list>
@@ -50,23 +50,28 @@
 import axios from "axios";
 import url from "@/serviceAPI.config.js";
 import { Toast } from "vant";
+import {toMoney} from "@/filter/moneyFilter.js";
 export default {
   data() {
     return {
       category: [], //分类数组
-      categoryIndex: 0, //默认一级分类指向第一个
+      categoryIndex: 0, //默认一级分类指向第一个,背景是白的
       categorySub: [], //二级分类数组
-      active: 0, //二级分类默认激活
+      active: 0, //二级分类默认激活,z指向第一个
       loading: false, //上拉加载
-      finished: false, //是否没有数据了
+      finished: false, //下拉加载是否没有数据了
       list: [], //商品数据
       isRefresh: false, //下拉加载
       page: 1, //商品列表的页数
-      goodsList: [], //商品列表信息
-      categorySubId: "" ,//二级商品信息
-       errorImg:'this.src="' + require('@/assets/images/errorimg.png') + '"',  //错误图片显示路径
-
+      goodsList: [], //商品详细列表信息
+      categorySubId: "", //二级商品信息ID
+      errorImg: 'this.src="' + require("@/assets/images/errorimg.png") + '"' //错误图片显示路径
     };
+  },
+  filters: {
+    moneyFilter(money) {
+      return toMoney(money);
+    }
   },
   created() {
     this.getCategory();
@@ -91,17 +96,18 @@ export default {
             this.category = response.data.message;
             this.getCategorySubByCategoryId(this.category[0].ID);
           } else {
-            Toast("服务器取得数据失败");
+            Toast.fail("服务器取得数据失败");
           }
         })
         .catch(error => {
           console.log(error);
         });
     },
-     clickCategory(index, categoryId) {
+    clickCategory(index, categoryId) {
       this.categoryIndex = index;
       this.page = 1;
       this.finished = false;
+      //切换大类的时候也要清空
       this.goodsList = [];
       this.getCategorySubByCategoryId(categoryId);
     },
@@ -115,9 +121,12 @@ export default {
         .then(response => {
           // console.log(response);
           if (response.data.code == 200 && response.data.message) {
-            this.twoCategory = response.data.message;
-            console.log(this.twoCategory);
+            this.categorySub = response.data.message;
             this.active = 0;
+            //初始ID是第一个
+            this.categorySubId = this.categorySub[0].ID;
+            //调用刷新方法加载商品详情
+            this.onLoad();
           } else {
             Toast.fail("数据取得失败");
           }
@@ -130,7 +139,8 @@ export default {
     onLoad() {
       setTimeout(() => {
         this.categorySubId = this.categorySubId
-        // ? this.categorySubId: this.categorySub[0].ID;
+          ? this.categorySubId
+          : this.categorySub[0].ID;
         this.getGoodList();
       }, 1000);
     },
@@ -148,14 +158,15 @@ export default {
     getGoodList() {
       axios({
         url: url.getGoodsListByCategorySubID,
-        method: "post",
+        method: 'post',
         data: {
+          //参数传递
           categorySubId: this.categorySubId,
           page: this.page
         }
       })
         .then(response => {
-          console.log(response);
+          // console.log(response);
           if (response.data.code == 200 && response.data.message.length) {
             this.page++;
             this.goodsList = this.goodsList.concat(response.data.message);
@@ -170,13 +181,21 @@ export default {
           console.log(error);
         });
     },
-    //点击子类获取商品信息
+    //点击二级商品id获取商品信息
     onClickCategorySub(index, title) {
-      this.categoryTwoId = this.categorySub[index].ID;
+      //console.log( this.categorySub)
+      this.categorySubId = this.categorySub[index].ID;
+      // console.log(this.categorySub);
+      //切换就清空
       this.goodsList = [];
       this.finished = false;
       this.page = 1;
       this.onLoad();
+    },
+    //跳转商品详情页
+    goGoodsInfo(id){
+      //使用name则用params接收，使用path用query接收
+      this.$router.push({name:'Goods',params:{goodsId:id}})
     }
   }
 };
